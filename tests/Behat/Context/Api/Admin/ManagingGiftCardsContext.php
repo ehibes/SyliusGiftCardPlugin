@@ -37,7 +37,7 @@ final class ManagingGiftCardsContext implements Context
      */
     public function iBrowseGiftCards(): void
     {
-        $this->client->index();
+        $this->client->index('gift-cards');
     }
 
     /**
@@ -45,7 +45,7 @@ final class ManagingGiftCardsContext implements Context
      */
     public function iWantToCreateGiftCard(): void
     {
-        $this->client->buildCreateRequest();
+        $this->client->buildCreateRequest('gift-cards');
     }
 
     /**
@@ -61,7 +61,7 @@ final class ManagingGiftCardsContext implements Context
      */
     public function iOpenGiftCardPage(string $code): void
     {
-        $this->client->show($code);
+        $this->client->show('gift-cards', $code);
     }
 
     /**
@@ -69,7 +69,7 @@ final class ManagingGiftCardsContext implements Context
      */
     public function iWantToEditGiftCard(string $code): void
     {
-        $this->client->buildUpdateRequest($code);
+        $this->client->buildUpdateRequest('gift-cards', $code);
     }
 
     /**
@@ -85,7 +85,7 @@ final class ManagingGiftCardsContext implements Context
      */
     public function iDeleteGiftCard(string $code): void
     {
-        $this->client->delete($code);
+        $this->client->delete('gift-cards', $code);
     }
 
     /**
@@ -94,9 +94,10 @@ final class ManagingGiftCardsContext implements Context
      */
     public function iShouldSeeGiftCardPricedAtForCustomer(string $code, int $price, string $customerEmail = null): void
     {
-        $response = $this->client->show($code);
+        $response = $this->client->show('gift-cards', $code);
 
         $giftCardPrice = $this->responseChecker->getValue($response, 'amount');
+        Assert::integer($giftCardPrice);
         Assert::same($price, $giftCardPrice);
 
         if (null !== $customerEmail) {
@@ -113,6 +114,7 @@ final class ManagingGiftCardsContext implements Context
         $response = $this->client->getLastResponse();
 
         $origin = $this->responseChecker->getValue($response, 'origin');
+        Assert::string($origin);
         Assert::same(GiftCardInterface::ORIGIN_API, $origin);
     }
 
@@ -121,7 +123,7 @@ final class ManagingGiftCardsContext implements Context
      */
     public function iShouldNotSeeGiftCard(string $code): void
     {
-        $response = $this->client->index();
+        $response = $this->client->index('gift-cards');
 
         Assert::false(
             $this->responseChecker->hasItemWithValue($response, 'code', $code),

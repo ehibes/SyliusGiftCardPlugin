@@ -8,7 +8,7 @@ use ApiPlatform\Core\Api\IriConverterInterface;
 use Behat\Behat\Context\Context;
 use Setono\SyliusGiftCardPlugin\Model\ProductInterface;
 use Sylius\Behat\Client\ApiClientInterface;
-use Sylius\Behat\Client\Request;
+use Sylius\Behat\Client\RequestFactoryInterface;
 use Sylius\Behat\Client\ResponseCheckerInterface;
 use Sylius\Behat\Service\SharedStorageInterface;
 use Sylius\Component\Product\Resolver\ProductVariantResolverInterface;
@@ -26,18 +26,26 @@ final class CartContext implements Context
 
     private IriConverterInterface $iriConverter;
 
+    private RequestFactoryInterface $requestFactory;
+
+    private string $apiUrlPrefix;
+
     public function __construct(
         ApiClientInterface $cartsClient,
         ResponseCheckerInterface $responseChecker,
         SharedStorageInterface $sharedStorage,
         ProductVariantResolverInterface $productVariantResolver,
         IriConverterInterface $iriConverter,
+        RequestFactoryInterface $requestFactory,
+        string $apiUrlPrefix,
     ) {
         $this->cartsClient = $cartsClient;
         $this->responseChecker = $responseChecker;
         $this->sharedStorage = $sharedStorage;
         $this->productVariantResolver = $productVariantResolver;
         $this->iriConverter = $iriConverter;
+        $this->requestFactory = $requestFactory;
+        $this->apiUrlPrefix = $apiUrlPrefix;
     }
 
     /**
@@ -47,7 +55,7 @@ final class CartContext implements Context
     {
         $tokenValue = $tokenValue ?? $this->pickupCart();
 
-        $request = Request::customItemAction('shop', 'orders', $tokenValue, HttpRequest::METHOD_PATCH, 'items');
+        $request = $this->requestFactory->customItemAction('shop', 'orders', $tokenValue, HttpRequest::METHOD_POST, 'items');
 
         $request->updateContent([
             'productVariant' => $this->productVariantResolver->getVariant($product)->getCode(),
@@ -59,12 +67,17 @@ final class CartContext implements Context
         $this->cartsClient->executeCustomRequest($request);
     }
 
-    private function pickupCart(): string
+    private function pickupCart(?string $localeCode = null): string
     {
-        $this->cartsClient->buildCreateRequest();
-        $this->cartsClient->addRequestData('localeCode', null);
+        $request = $this->requestFactory->custom(
+            sprintf('%s/shop/orders', $this->apiUrlPrefix),
+            HttpRequest::METHOD_POST,
+            ['HTTP_ACCEPT_LANGUAGE' => $localeCode ?? ''],
+        );
 
-        $tokenValue = $this->responseChecker->getValue($this->cartsClient->create(), 'tokenValue');
+        $this->cartsClient->executeCustomRequest($request);
+
+        $tokenValue = $this->responseChecker->getValue($this->cartsClient->getLastResponse(), 'tokenValue');
 
         $this->sharedStorage->set('cart_token', $tokenValue);
 

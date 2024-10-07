@@ -29,7 +29,7 @@ final class ManagingGiftCardsBalanceContext implements Context
      */
     public function iBrowseGiftCardsBalance(): void
     {
-        $this->client->index();
+        $this->client->index('gift-cards/balance');
     }
 
     /**

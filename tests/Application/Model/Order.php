@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Setono\SyliusGiftCardPlugin\Tests\Application\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use Setono\SyliusGiftCardPlugin\Model\OrderInterface as SetonoSyliusGiftCardOrderInterface;
-use Setono\SyliusGiftCardPlugin\Model\OrderTrait as SetonoSyliusGiftCardOrderTrait;
+use Setono\SyliusGiftCardPlugin\Model\OrderInterface as SetonoSyliusGiftCardPluginOrderInterface;
+use Setono\SyliusGiftCardPlugin\Model\OrderTrait as SetonoSyliusGiftCardPluginOrderTrait;
 use Sylius\Component\Core\Model\Order as BaseOrder;
 
 /**
@@ -14,15 +14,15 @@ use Sylius\Component\Core\Model\Order as BaseOrder;
  *
  * @ORM\Table(name="sylius_order")
  */
-class Order extends BaseOrder implements SetonoSyliusGiftCardOrderInterface
+class Order extends BaseOrder implements SetonoSyliusGiftCardPluginOrderInterface
 {
-    use SetonoSyliusGiftCardOrderTrait {
-        SetonoSyliusGiftCardOrderTrait::__construct as private __SetonoSyliusGiftCardOrderTraitConstruct;
+    use SetonoSyliusGiftCardPluginOrderTrait {
+        SetonoSyliusGiftCardPluginOrderTrait::__construct as private __giftCardTraitConstruct;
     }
 
     public function __construct()
     {
-        $this->__SetonoSyliusGiftCardOrderTraitConstruct();
+        $this->__giftCardTraitConstruct();
 
         parent::__construct();
     }

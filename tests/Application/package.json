@@ -26,5 +26,6 @@
         "url": "git+https://github.com/Sylius/Sylius.git"
     },
     "author": "Paweł Jędrzejewski",
-    "license": "MIT"
+    "license": "MIT",
+    "packageManager": "yarn@1.22.22"
 }

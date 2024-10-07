@@ -7,7 +7,7 @@ namespace Setono\SyliusGiftCardPlugin\Tests\Behat\Context\Api\Admin;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use Behat\Behat\Context\Context;
 use Sylius\Behat\Client\ApiClientInterface;
-use Sylius\Behat\Client\Request;
+use Sylius\Behat\Client\RequestFactoryInterface;
 use Sylius\Behat\Client\ResponseCheckerInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Locale\Model\Locale;
@@ -22,14 +22,18 @@ final class ManagingGiftCardConfigurationsContext implements Context
 
     private IriConverterInterface $iriConverter;
 
+    private RequestFactoryInterface $requestFactory;
+
     public function __construct(
         ApiClientInterface $client,
         ResponseCheckerInterface $responseChecker,
         IriConverterInterface $iriConverter,
+        RequestFactoryInterface $requestFactory,
     ) {
         $this->client = $client;
         $this->responseChecker = $responseChecker;
         $this->iriConverter = $iriConverter;
+        $this->requestFactory = $requestFactory;
     }
 
     /**
@@ -37,7 +41,7 @@ final class ManagingGiftCardConfigurationsContext implements Context
      */
     public function iBrowseGiftCardConfigurations(): void
     {
-        $this->client->index();
+        $this->client->index('gift-card-configuration');
     }
 
     /**
@@ -45,7 +49,7 @@ final class ManagingGiftCardConfigurationsContext implements Context
      */
     public function iWantToCreateGiftCardConfiguration(): void
     {
-        $this->client->buildCreateRequest();
+        $this->client->buildCreateRequest('gift-card-configurations');
     }
 
     /**
@@ -53,7 +57,7 @@ final class ManagingGiftCardConfigurationsContext implements Context
      */
     public function iWantToUpdateGiftCardConfiguration(string $code): void
     {
-        $this->client->buildUpdateRequest($code);
+        $this->client->buildUpdateRequest('gift-card-configurations', $code);
     }
 
     /**
@@ -64,7 +68,7 @@ final class ManagingGiftCardConfigurationsContext implements Context
         ChannelInterface $channel,
         string $localeCode,
     ): void {
-        $request = Request::customItemAction(
+        $request = $this->requestFactory->customItemAction(
             'admin',
             'gift-card-configurations',
             $code,
@@ -101,7 +105,7 @@ final class ManagingGiftCardConfigurationsContext implements Context
      */
     public function iDeleteGiftCardConfiguration(string $code): void
     {
-        $this->client->delete($code);
+        $this->client->delete('gift-card-configurations', $code);
     }
 
     /**
@@ -109,7 +113,7 @@ final class ManagingGiftCardConfigurationsContext implements Context
      */
     public function iShouldSeeGiftCardConfiguration(string $code): void
     {
-        $response = $this->client->show($code);
+        $response = $this->client->show('gift-card-configurations', $code);
 
         Assert::same($this->responseChecker->getValue($response, 'code'), $code);
     }
@@ -119,7 +123,7 @@ final class ManagingGiftCardConfigurationsContext implements Context
      */
     public function iShouldNotSeeGiftCardConfiguration(string $code): void
     {
-        $response = $this->client->index();
+        $response = $this->client->index('gift-card-configurations');
 
         Assert::false(
             $this->responseChecker->hasItemWithValue($response, 'code', $code),
@@ -206,10 +210,11 @@ final class ManagingGiftCardConfigurationsContext implements Context
     public function itShouldHave(ChannelInterface $channel, string $localeCode): void
     {
         $response = $this->client->getLastResponse();
-
         $channelConfigurations = $this->responseChecker->getValue($response, 'channelConfigurations');
-        Assert::same($channelConfigurations[0]['channel'], $this->iriConverter->getIriFromItem($channel));
-        Assert::same($channelConfigurations[0]['locale'], $this->iriConverter->getIriFromResourceClass(Locale::class) . '/' . $localeCode);
+        Assert::isArray($channelConfigurations);
+        Assert::isArray($channelConfigurations[0]);
+        Assert::same($channelConfigurations[0]['channel'], $this->iriConverter->getIriFromItemInSection($channel, 'admin'));
+        Assert::same($channelConfigurations[0]['locale'], $this->iriConverter->getItemIriFromResourceClass(Locale::class, ['code' => $localeCode], null, 'admin'));
     }
 
     /**
