@@ -1,0 +1,3 @@
+api_platform:
+    mappings:
+        paths: ['%kernel.project_dir%/vendor/setono/sylius-gift-card-plugin/src/Resources/config/api_resources']
