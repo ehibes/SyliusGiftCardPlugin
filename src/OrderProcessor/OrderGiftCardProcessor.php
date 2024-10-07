@@ -15,20 +15,8 @@ use Webmozart\Assert\Assert;
 
 final class OrderGiftCardProcessor implements OrderProcessorInterface
 {
-    private TranslatorInterface $translator;
-
-    private AdjustmentFactoryInterface $adjustmentFactory;
-
-    private OrderEligibleTotalProviderInterface $orderEligibleTotalProvider;
-
-    public function __construct(
-        TranslatorInterface $translator,
-        AdjustmentFactoryInterface $adjustmentFactory,
-        OrderEligibleTotalProviderInterface $orderEligibleTotalProvider,
-    ) {
-        $this->translator = $translator;
-        $this->adjustmentFactory = $adjustmentFactory;
-        $this->orderEligibleTotalProvider = $orderEligibleTotalProvider;
+    public function __construct(private readonly TranslatorInterface $translator, private readonly AdjustmentFactoryInterface $adjustmentFactory, private readonly OrderEligibleTotalProviderInterface $orderEligibleTotalProvider)
+    {
     }
 
     /**

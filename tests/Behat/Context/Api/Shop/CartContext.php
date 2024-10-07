@@ -16,36 +16,8 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 final class CartContext implements Context
 {
-    private ApiClientInterface $cartsClient;
-
-    private ResponseCheckerInterface $responseChecker;
-
-    private SharedStorageInterface $sharedStorage;
-
-    private ProductVariantResolverInterface $productVariantResolver;
-
-    private IriConverterInterface $iriConverter;
-
-    private RequestFactoryInterface $requestFactory;
-
-    private string $apiUrlPrefix;
-
-    public function __construct(
-        ApiClientInterface $cartsClient,
-        ResponseCheckerInterface $responseChecker,
-        SharedStorageInterface $sharedStorage,
-        ProductVariantResolverInterface $productVariantResolver,
-        IriConverterInterface $iriConverter,
-        RequestFactoryInterface $requestFactory,
-        string $apiUrlPrefix,
-    ) {
-        $this->cartsClient = $cartsClient;
-        $this->responseChecker = $responseChecker;
-        $this->sharedStorage = $sharedStorage;
-        $this->productVariantResolver = $productVariantResolver;
-        $this->iriConverter = $iriConverter;
-        $this->requestFactory = $requestFactory;
-        $this->apiUrlPrefix = $apiUrlPrefix;
+    public function __construct(private readonly ApiClientInterface $cartsClient, private readonly ResponseCheckerInterface $responseChecker, private readonly SharedStorageInterface $sharedStorage, private readonly ProductVariantResolverInterface $productVariantResolver, private readonly IriConverterInterface $iriConverter, private readonly RequestFactoryInterface $requestFactory, private readonly string $apiUrlPrefix)
+    {
     }
 
     /**
@@ -53,7 +25,7 @@ final class CartContext implements Context
      */
     public function iAddProductWithAmountAndMessage(ProductInterface $product, int $amount, string $message): void
     {
-        $tokenValue = $tokenValue ?? $this->pickupCart();
+        $tokenValue ??= $this->pickupCart();
 
         $request = $this->requestFactory->customItemAction('shop', 'orders', $tokenValue, HttpRequest::METHOD_POST, 'items');
 

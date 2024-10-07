@@ -16,24 +16,8 @@ use Webmozart\Assert\Assert;
 
 final class GenerateEncodedExamplePdfAction
 {
-    private GiftCardFactoryInterface $giftCardFactory;
-
-    private GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository;
-
-    private PdfRendererInterface $pdfRenderer;
-
-    private FormFactoryInterface $formFactory;
-
-    public function __construct(
-        GiftCardFactoryInterface $giftCardFactory,
-        GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository,
-        PdfRendererInterface $giftCardPDFRenderer,
-        FormFactoryInterface $formFactory,
-    ) {
-        $this->giftCardFactory = $giftCardFactory;
-        $this->giftCardConfigurationRepository = $giftCardConfigurationRepository;
-        $this->pdfRenderer = $giftCardPDFRenderer;
-        $this->formFactory = $formFactory;
+    public function __construct(private readonly GiftCardFactoryInterface $giftCardFactory, private readonly GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository, private readonly PdfRendererInterface $pdfRenderer, private readonly FormFactoryInterface $formFactory)
+    {
     }
 
     public function __invoke(Request $request, int $id): Response

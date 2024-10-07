@@ -11,13 +11,8 @@ use Webmozart\Assert\Assert;
 
 final class ManagingGiftCardsContext implements Context
 {
-    /** @var CreateSimpleProductPageInterface */
-    private $createGiftCardPage;
-
-    public function __construct(
-        CreateSimpleProductPageInterface $createGiftCardPage,
-    ) {
-        $this->createGiftCardPage = $createGiftCardPage;
+    public function __construct(private readonly CreateSimpleProductPageInterface $createGiftCardPage)
+    {
     }
 
     /**

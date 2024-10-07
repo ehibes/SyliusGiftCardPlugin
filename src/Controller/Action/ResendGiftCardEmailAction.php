@@ -19,20 +19,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class ResendGiftCardEmailAction
 {
-    private GiftCardEmailManagerInterface $giftCardEmailManager;
-
-    private GiftCardRepositoryInterface $giftCardRepository;
-
-    private UrlGeneratorInterface $router;
-
-    public function __construct(
-        GiftCardEmailManagerInterface $giftCardEmailManager,
-        GiftCardRepositoryInterface $giftCardRepository,
-        UrlGeneratorInterface $router,
-    ) {
-        $this->giftCardEmailManager = $giftCardEmailManager;
-        $this->giftCardRepository = $giftCardRepository;
-        $this->router = $router;
+    public function __construct(private readonly GiftCardEmailManagerInterface $giftCardEmailManager, private readonly GiftCardRepositoryInterface $giftCardRepository, private readonly UrlGeneratorInterface $router)
+    {
     }
 
     public function __invoke(Request $request, int $id): Response
@@ -86,10 +74,7 @@ final class ResendGiftCardEmailAction
         return $this->router->generate('setono_sylius_gift_card_admin_gift_card_index');
     }
 
-    /**
-     * @param mixed $message
-     */
-    private function addFlash(Request $request, string $type, $message): void
+    private function addFlash(Request $request, string $type, mixed $message): void
     {
         $session = $request->getSession();
         if ($session instanceof Session) {

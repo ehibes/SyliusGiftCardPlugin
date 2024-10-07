@@ -21,21 +21,13 @@ use Webmozart\Assert\Assert;
  */
 final class OrderGiftCardOperator implements OrderGiftCardOperatorInterface
 {
-    private EntityManagerInterface $giftCardManager;
-
-    private GiftCardEmailManagerInterface $giftCardOrderEmailManager;
-
-    public function __construct(
-        EntityManagerInterface $giftCardManager,
-        GiftCardEmailManagerInterface $giftCardOrderEmailManager,
-    ) {
-        $this->giftCardManager = $giftCardManager;
-        $this->giftCardOrderEmailManager = $giftCardOrderEmailManager;
+    public function __construct(private readonly EntityManagerInterface $giftCardManager, private readonly GiftCardEmailManagerInterface $giftCardOrderEmailManager)
+    {
     }
 
     public function associateToCustomer(OrderInterface $order): void
     {
-        $items = self::getOrderItemsThatAreGiftCards($order);
+        $items = $this->getOrderItemsThatAreGiftCards($order);
 
         if (count($items) === 0) {
             return;
@@ -62,7 +54,7 @@ final class OrderGiftCardOperator implements OrderGiftCardOperatorInterface
     {
         $giftCards = $this->getGiftCards($order);
 
-        if (count($giftCards) === 0) {
+        if ($giftCards === []) {
             return;
         }
 
@@ -81,7 +73,7 @@ final class OrderGiftCardOperator implements OrderGiftCardOperatorInterface
     {
         $giftCards = $this->getGiftCards($order);
 
-        if (count($giftCards) === 0) {
+        if ($giftCards === []) {
             return;
         }
 
@@ -96,7 +88,7 @@ final class OrderGiftCardOperator implements OrderGiftCardOperatorInterface
     {
         $giftCards = $this->getGiftCards($order);
 
-        if (count($giftCards) === 0) {
+        if ($giftCards === []) {
             return;
         }
 
@@ -112,7 +104,7 @@ final class OrderGiftCardOperator implements OrderGiftCardOperatorInterface
     {
         $giftCards = [];
 
-        $items = self::getOrderItemsThatAreGiftCards($order);
+        $items = $this->getOrderItemsThatAreGiftCards($order);
         foreach ($items as $item) {
             /** @var OrderItemUnitInterface $unit */
             foreach ($item->getUnits() as $unit) {
@@ -131,7 +123,7 @@ final class OrderGiftCardOperator implements OrderGiftCardOperatorInterface
     /**
      * @return Collection<array-key, OrderItemInterface>
      */
-    private static function getOrderItemsThatAreGiftCards(OrderInterface $order): Collection
+    private function getOrderItemsThatAreGiftCards(OrderInterface $order): Collection
     {
         return $order->getItems()->filter(static function (OrderItemInterface $item): bool {
             /** @var ProductInterface|null $product */

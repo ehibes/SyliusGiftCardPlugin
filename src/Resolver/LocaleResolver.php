@@ -4,30 +4,24 @@ declare(strict_types=1);
 
 namespace Setono\SyliusGiftCardPlugin\Resolver;
 
+use RuntimeException;
 use Setono\SyliusGiftCardPlugin\Repository\OrderRepositoryInterface;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Locale\Model\LocaleInterface;
 
 final class LocaleResolver implements LocaleResolverInterface
 {
-    private OrderRepositoryInterface $orderRepository;
-
-    private ChannelRepositoryInterface $channelRepository;
-
-    public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        ChannelRepositoryInterface $channelRepository,
-    ) {
-        $this->orderRepository = $orderRepository;
-        $this->channelRepository = $channelRepository;
+    public function __construct(private readonly OrderRepositoryInterface $orderRepository, private readonly ChannelRepositoryInterface $channelRepository)
+    {
     }
 
     public function resolveFromCustomer(CustomerInterface $customer): string
     {
         $latestOrder = $this->orderRepository->findLatestByCustomer($customer);
-        if (null !== $latestOrder) {
+        if ($latestOrder instanceof \Setono\SyliusGiftCardPlugin\Model\OrderInterface) {
             return $this->resolveFromOrder($latestOrder);
         }
 
@@ -42,7 +36,7 @@ final class LocaleResolver implements LocaleResolverInterface
         }
 
         $channel = $order->getChannel();
-        if (null !== $channel) {
+        if ($channel instanceof \Sylius\Component\Channel\Model\ChannelInterface) {
             return $this->resolveFromChannel($channel);
         }
 
@@ -71,13 +65,13 @@ final class LocaleResolver implements LocaleResolverInterface
             }
         }
 
-        throw new \RuntimeException('Could not resolve a locale');
+        throw new RuntimeException('Could not resolve a locale');
     }
 
     private function _resolveFromChannel(ChannelInterface $channel): ?string
     {
         $locale = $channel->getDefaultLocale();
-        if (null !== $locale) {
+        if ($locale instanceof LocaleInterface) {
             $localeCode = $locale->getCode();
             if (null !== $localeCode) {
                 return $localeCode;

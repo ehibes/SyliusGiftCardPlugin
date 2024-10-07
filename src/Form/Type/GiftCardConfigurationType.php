@@ -15,15 +15,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 final class GiftCardConfigurationType extends AbstractResourceType
 {
-    /** @var list<string> */
-    private array $availableOrientations;
-
-    /** @var list<string> */
-    private array $availablePageSizes;
-
-    /** @var list<string> */
-    private array $preferredPageSizes;
-
     /**
      * @param list<string> $availableOrientations
      * @param list<string> $availablePageSizes
@@ -31,17 +22,13 @@ final class GiftCardConfigurationType extends AbstractResourceType
      * @param list<string> $validationGroups
      */
     public function __construct(
-        array $availableOrientations,
-        array $availablePageSizes,
-        array $preferredPageSizes,
+        private readonly array $availableOrientations,
+        private readonly array $availablePageSizes,
+        private readonly array $preferredPageSizes,
         string $dataClass,
         array $validationGroups = [],
     ) {
         parent::__construct($dataClass, $validationGroups);
-
-        $this->availableOrientations = $availableOrientations;
-        $this->availablePageSizes = $availablePageSizes;
-        $this->preferredPageSizes = $preferredPageSizes;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -78,17 +65,13 @@ final class GiftCardConfigurationType extends AbstractResourceType
             'preferred_choices' => $this->preferredPageSizes,
             'label' => 'setono_sylius_gift_card.form.gift_card_configuration.page_size',
             'choice_translation_domain' => false,
-            'choice_label' => function (string $value) {
-                return $value;
-            },
+            'choice_label' => fn (string $value) => $value,
         ]);
         $builder->add('orientation', ChoiceType::class, [
             'choices' => $this->availableOrientations,
             'label' => 'setono_sylius_gift_card.form.gift_card_configuration.orientation',
             'choice_translation_domain' => false,
-            'choice_label' => function (string $value) {
-                return $value;
-            },
+            'choice_label' => fn (string $value) => $value,
         ]);
         $builder->add('template', TextareaType::class, [
             'label' => 'setono_sylius_gift_card.form.gift_card_configuration.template',

@@ -16,17 +16,14 @@ use function sprintf;
  */
 final class OrderGiftCardAmountModifier implements OrderGiftCardAmountModifierInterface
 {
-    private ObjectManager $giftCardManager;
-
-    public function __construct(ObjectManager $giftCardManager)
+    public function __construct(private readonly ObjectManager $giftCardManager)
     {
-        $this->giftCardManager = $giftCardManager;
     }
 
     public function decrement(OrderInterface $order): void
     {
         foreach ($order->getAdjustments(AdjustmentInterface::ORDER_GIFT_CARD_ADJUSTMENT) as $adjustment) {
-            $giftCard = self::getGiftCard($order, (string) $adjustment->getOriginCode());
+            $giftCard = $this->getGiftCard($order, (string) $adjustment->getOriginCode());
 
             $amount = abs($adjustment->getAmount());
 
@@ -48,7 +45,7 @@ final class OrderGiftCardAmountModifier implements OrderGiftCardAmountModifierIn
     public function increment(OrderInterface $order): void
     {
         foreach ($order->getAdjustments(AdjustmentInterface::ORDER_GIFT_CARD_ADJUSTMENT) as $adjustment) {
-            $giftCard = self::getGiftCard($order, (string) $adjustment->getOriginCode());
+            $giftCard = $this->getGiftCard($order, (string) $adjustment->getOriginCode());
 
             $giftCard->setAmount($giftCard->getAmount() + abs($adjustment->getAmount()));
 
@@ -60,7 +57,7 @@ final class OrderGiftCardAmountModifier implements OrderGiftCardAmountModifierIn
         $this->giftCardManager->flush();
     }
 
-    private static function getGiftCard(OrderInterface $order, string $code): GiftCardInterface
+    private function getGiftCard(OrderInterface $order, string $code): GiftCardInterface
     {
         foreach ($order->getGiftCards() as $giftCard) {
             if ($giftCard->getCode() === $code) {

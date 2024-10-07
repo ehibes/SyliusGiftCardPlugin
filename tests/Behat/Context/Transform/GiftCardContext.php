@@ -10,12 +10,8 @@ use Setono\SyliusGiftCardPlugin\Repository\GiftCardRepositoryInterface;
 
 final class GiftCardContext implements Context
 {
-    /** @var GiftCardRepositoryInterface */
-    private $giftCardRepository;
-
-    public function __construct(GiftCardRepositoryInterface $giftCardRepository)
+    public function __construct(private readonly GiftCardRepositoryInterface $giftCardRepository)
     {
-        $this->giftCardRepository = $giftCardRepository;
     }
 
     /**

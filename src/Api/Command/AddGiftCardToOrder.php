@@ -8,11 +8,8 @@ class AddGiftCardToOrder implements GiftCardCodeAwareInterface
 {
     public ?string $giftCardCode = null;
 
-    public string $orderTokenValue;
-
-    public function __construct(string $orderTokenValue)
+    public function __construct(public string $orderTokenValue)
     {
-        $this->orderTokenValue = $orderTokenValue;
     }
 
     public function getGiftCardCode(): ?string

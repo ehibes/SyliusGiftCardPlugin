@@ -11,16 +11,8 @@ use Setono\SyliusGiftCardPlugin\Model\GiftCardConfigurationInterface;
 
 final class CreateGiftCardConfigurationHandler
 {
-    private GiftCardConfigurationFactoryInterface $giftCardConfigurationFactory;
-
-    private ObjectManager $giftCardConfigurationManager;
-
-    public function __construct(
-        GiftCardConfigurationFactoryInterface $giftCardConfigurationFactory,
-        ObjectManager $giftCardConfigurationManager,
-    ) {
-        $this->giftCardConfigurationFactory = $giftCardConfigurationFactory;
-        $this->giftCardConfigurationManager = $giftCardConfigurationManager;
+    public function __construct(private readonly GiftCardConfigurationFactoryInterface $giftCardConfigurationFactory, private readonly ObjectManager $giftCardConfigurationManager)
+    {
     }
 
     public function __invoke(CreateGiftCardConfiguration $command): GiftCardConfigurationInterface

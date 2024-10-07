@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusGiftCardPlugin\Model;
 
+use DateTimeInterface;
 use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
@@ -123,11 +124,11 @@ interface GiftCardInterface extends ResourceInterface, ToggleableInterface, Code
 
     public function getOrigin(): ?string;
 
-    public function getExpiresAt(): ?\DateTimeInterface;
+    public function getExpiresAt(): ?DateTimeInterface;
 
-    public function setExpiresAt(?\DateTimeInterface $expiresAt): void;
+    public function setExpiresAt(?DateTimeInterface $expiresAt): void;
 
-    public function isExpired(\DateTimeInterface $date = null): bool;
+    public function isExpired(DateTimeInterface $date = null): bool;
 
     public function getSendNotificationEmail(): bool;
 

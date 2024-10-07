@@ -22,36 +22,8 @@ use Webmozart\Assert\Assert;
 
 final class AddItemToCartHandler
 {
-    private OrderRepositoryInterface $orderRepository;
-
-    private ProductVariantRepositoryInterface $productVariantRepository;
-
-    private OrderModifierInterface $orderModifier;
-
-    private CartItemFactoryInterface $cartItemFactory;
-
-    private OrderItemQuantityModifierInterface $orderItemQuantityModifier;
-
-    private GiftCardFactoryInterface $giftCardFactory;
-
-    private EntityManagerInterface $giftCardManager;
-
-    public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        ProductVariantRepositoryInterface $productVariantRepository,
-        OrderModifierInterface $orderModifier,
-        CartItemFactoryInterface $cartItemFactory,
-        OrderItemQuantityModifierInterface $orderItemQuantityModifier,
-        GiftCardFactoryInterface $giftCardFactory,
-        EntityManagerInterface $giftCardManager,
-    ) {
-        $this->orderRepository = $orderRepository;
-        $this->productVariantRepository = $productVariantRepository;
-        $this->orderModifier = $orderModifier;
-        $this->cartItemFactory = $cartItemFactory;
-        $this->orderItemQuantityModifier = $orderItemQuantityModifier;
-        $this->giftCardFactory = $giftCardFactory;
-        $this->giftCardManager = $giftCardManager;
+    public function __construct(private readonly OrderRepositoryInterface $orderRepository, private readonly ProductVariantRepositoryInterface $productVariantRepository, private readonly OrderModifierInterface $orderModifier, private readonly CartItemFactoryInterface $cartItemFactory, private readonly OrderItemQuantityModifierInterface $orderItemQuantityModifier, private readonly GiftCardFactoryInterface $giftCardFactory, private readonly EntityManagerInterface $giftCardManager)
+    {
     }
 
     public function __invoke(SyliusAddItemToCart $addItemToCart): OrderInterface

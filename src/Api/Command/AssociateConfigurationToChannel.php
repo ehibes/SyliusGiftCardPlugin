@@ -8,14 +8,8 @@ class AssociateConfigurationToChannel implements ConfigurationCodeAwareInterface
 {
     public ?string $configurationCode = null;
 
-    public string $localeCode;
-
-    public string $channelCode;
-
-    public function __construct(string $localeCode, string $channelCode)
+    public function __construct(public string $localeCode, public string $channelCode)
     {
-        $this->localeCode = $localeCode;
-        $this->channelCode = $channelCode;
     }
 
     public function getConfigurationCode(): ?string

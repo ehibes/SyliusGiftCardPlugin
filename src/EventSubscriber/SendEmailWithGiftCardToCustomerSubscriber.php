@@ -7,6 +7,7 @@ namespace Setono\SyliusGiftCardPlugin\EventSubscriber;
 use Setono\SyliusGiftCardPlugin\EmailManager\GiftCardEmailManagerInterface;
 use Setono\SyliusGiftCardPlugin\Model\GiftCardInterface;
 use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -16,11 +17,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 final class SendEmailWithGiftCardToCustomerSubscriber implements EventSubscriberInterface
 {
-    private GiftCardEmailManagerInterface $giftCardEmailManager;
-
-    public function __construct(GiftCardEmailManagerInterface $giftCardEmailManager)
+    public function __construct(private readonly GiftCardEmailManagerInterface $giftCardEmailManager)
     {
-        $this->giftCardEmailManager = $giftCardEmailManager;
     }
 
     public static function getSubscribedEvents(): array
@@ -38,7 +36,7 @@ final class SendEmailWithGiftCardToCustomerSubscriber implements EventSubscriber
         }
 
         $customer = $giftCard->getCustomer();
-        if (null === $customer) {
+        if (!$customer instanceof CustomerInterface) {
             return;
         }
 

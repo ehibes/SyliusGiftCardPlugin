@@ -10,11 +10,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 final class ValidPageSizeValidator extends ConstraintValidator
 {
-    private array $availablePageSizes;
-
-    public function __construct(array $availableOrientations)
+    public function __construct(private readonly array $availablePageSizes)
     {
-        $this->availablePageSizes = $availableOrientations;
     }
 
     /**

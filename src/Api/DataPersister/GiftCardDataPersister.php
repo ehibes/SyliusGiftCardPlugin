@@ -10,11 +10,8 @@ use Webmozart\Assert\Assert;
 
 final class GiftCardDataPersister implements ContextAwareDataPersisterInterface
 {
-    private ContextAwareDataPersisterInterface $decoratedDataPersister;
-
-    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister)
+    public function __construct(private readonly ContextAwareDataPersisterInterface $decoratedDataPersister)
     {
-        $this->decoratedDataPersister = $decoratedDataPersister;
     }
 
     /**

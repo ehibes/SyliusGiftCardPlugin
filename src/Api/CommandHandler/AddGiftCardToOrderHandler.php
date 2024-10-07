@@ -14,20 +14,8 @@ use Webmozart\Assert\Assert;
 
 final class AddGiftCardToOrderHandler
 {
-    private GiftCardRepositoryInterface $giftCardRepository;
-
-    private OrderRepositoryInterface $orderRepository;
-
-    private GiftCardApplicatorInterface $giftCardApplicator;
-
-    public function __construct(
-        GiftCardRepositoryInterface $giftCardRepository,
-        OrderRepositoryInterface $orderRepository,
-        GiftCardApplicatorInterface $giftCardApplicator,
-    ) {
-        $this->giftCardRepository = $giftCardRepository;
-        $this->orderRepository = $orderRepository;
-        $this->giftCardApplicator = $giftCardApplicator;
+    public function __construct(private readonly GiftCardRepositoryInterface $giftCardRepository, private readonly OrderRepositoryInterface $orderRepository, private readonly GiftCardApplicatorInterface $giftCardApplicator)
+    {
     }
 
     public function __invoke(AddGiftCardToOrder $command): GiftCardInterface

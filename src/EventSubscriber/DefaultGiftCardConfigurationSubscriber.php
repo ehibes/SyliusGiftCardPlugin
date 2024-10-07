@@ -15,11 +15,8 @@ use Webmozart\Assert\Assert;
  */
 final class DefaultGiftCardConfigurationSubscriber implements EventSubscriberInterface
 {
-    private GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository;
-
-    public function __construct(GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository)
+    public function __construct(private readonly GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository)
     {
-        $this->giftCardConfigurationRepository = $giftCardConfigurationRepository;
     }
 
     public static function getSubscribedEvents(): array

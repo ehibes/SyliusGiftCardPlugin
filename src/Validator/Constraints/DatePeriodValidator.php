@@ -12,11 +12,8 @@ use Webmozart\Assert\Assert;
 
 final class DatePeriodValidator extends ConstraintValidator
 {
-    private DatePeriodUnitProviderInterface $datePeriodUnitProvider;
-
-    public function __construct(DatePeriodUnitProviderInterface $datePeriodUnitProvider)
+    public function __construct(private readonly DatePeriodUnitProviderInterface $datePeriodUnitProvider)
     {
-        $this->datePeriodUnitProvider = $datePeriodUnitProvider;
     }
 
     /**

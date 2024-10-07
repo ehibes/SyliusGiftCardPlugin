@@ -12,11 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 final class DatePeriodType extends AbstractType
 {
-    private DatePeriodUnitProviderInterface $datePeriodUnitProvider;
-
-    public function __construct(DatePeriodUnitProviderInterface $datePeriodUnitProvider)
+    public function __construct(private readonly DatePeriodUnitProviderInterface $datePeriodUnitProvider)
     {
-        $this->datePeriodUnitProvider = $datePeriodUnitProvider;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -27,9 +24,7 @@ final class DatePeriodType extends AbstractType
         $builder->add('unit', ChoiceType::class, [
             'label' => 'setono_sylius_gift_card.form.date_period.unit',
             'choices' => $this->datePeriodUnitProvider->getPeriodUnits(),
-            'choice_label' => function (string $choice): string {
-                return \sprintf('setono_sylius_gift_card.form.date_period.unit_%s', $choice);
-            },
+            'choice_label' => fn (string $choice): string => \sprintf('setono_sylius_gift_card.form.date_period.unit_%s', $choice),
         ]);
     }
 }

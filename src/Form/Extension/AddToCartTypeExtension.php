@@ -19,16 +19,8 @@ use Webmozart\Assert\Assert;
 
 final class AddToCartTypeExtension extends AbstractTypeExtension
 {
-    private GiftCardFactoryInterface $giftCardFactory;
-
-    private EntityManagerInterface $giftCardManager;
-
-    public function __construct(
-        GiftCardFactoryInterface $giftCardFactory,
-        EntityManagerInterface $giftCardManager,
-    ) {
-        $this->giftCardFactory = $giftCardFactory;
-        $this->giftCardManager = $giftCardManager;
+    public function __construct(private readonly GiftCardFactoryInterface $giftCardFactory, private readonly EntityManagerInterface $giftCardManager)
+    {
     }
 
     public static function getExtendedTypes(): iterable
@@ -40,9 +32,9 @@ final class AddToCartTypeExtension extends AbstractTypeExtension
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'reworkFormForGiftCard']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->reworkFormForGiftCard(...));
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'populateCartItem']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, $this->populateCartItem(...));
     }
 
     public function reworkFormForGiftCard(FormEvent $event): void

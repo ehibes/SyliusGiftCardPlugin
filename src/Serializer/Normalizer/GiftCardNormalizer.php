@@ -14,14 +14,8 @@ use Webmozart\Assert\Assert;
 
 final class GiftCardNormalizer implements ContextAwareNormalizerInterface
 {
-    private ObjectNormalizer $objectNormalizer;
-
-    private MoneyFormatterInterface $moneyFormatter;
-
-    public function __construct(ObjectNormalizer $objectNormalizer, MoneyFormatterInterface $moneyFormatter)
+    public function __construct(private readonly ObjectNormalizer $objectNormalizer, private readonly MoneyFormatterInterface $moneyFormatter)
     {
-        $this->objectNormalizer = $objectNormalizer;
-        $this->moneyFormatter = $moneyFormatter;
     }
 
     /**

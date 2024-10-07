@@ -11,16 +11,8 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 final class PdfRuntime implements RuntimeExtensionInterface
 {
-    private PdfRendererInterface $PDFRenderer;
-
-    private GiftCardFactoryInterface $giftCardFactory;
-
-    public function __construct(
-        PdfRendererInterface $giftCardPDFRenderer,
-        GiftCardFactoryInterface $giftCardFactory,
-    ) {
-        $this->PDFRenderer = $giftCardPDFRenderer;
-        $this->giftCardFactory = $giftCardFactory;
+    public function __construct(private readonly PdfRendererInterface $PDFRenderer, private readonly GiftCardFactoryInterface $giftCardFactory)
+    {
     }
 
     public function getBase64EncodedExamplePdfContent(GiftCardConfigurationInterface $giftCardChannelConfiguration): string

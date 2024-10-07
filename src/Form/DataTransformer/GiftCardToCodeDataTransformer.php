@@ -13,16 +13,8 @@ use Webmozart\Assert\Assert;
 
 final class GiftCardToCodeDataTransformer implements DataTransformerInterface
 {
-    private GiftCardRepositoryInterface $giftCardRepository;
-
-    private ChannelContextInterface $channelContext;
-
-    public function __construct(
-        GiftCardRepositoryInterface $giftCardRepository,
-        ChannelContextInterface $channelContext,
-    ) {
-        $this->giftCardRepository = $giftCardRepository;
-        $this->channelContext = $channelContext;
+    public function __construct(private readonly GiftCardRepositoryInterface $giftCardRepository, private readonly ChannelContextInterface $channelContext)
+    {
     }
 
     /**
@@ -54,7 +46,7 @@ final class GiftCardToCodeDataTransformer implements DataTransformerInterface
             $this->channelContext->getChannel(),
         );
 
-        if (null !== $giftCard) {
+        if ($giftCard instanceof GiftCardInterface) {
             return $giftCard;
         }
 

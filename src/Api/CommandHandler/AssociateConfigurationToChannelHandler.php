@@ -15,28 +15,8 @@ use Webmozart\Assert\Assert;
 
 final class AssociateConfigurationToChannelHandler
 {
-    private RepositoryInterface $giftCardConfigurationRepository;
-
-    private ChannelRepositoryInterface $channelRepository;
-
-    private RepositoryInterface $localeRepository;
-
-    private RepositoryInterface $giftCardChannelConfigurationRepository;
-
-    private FactoryInterface $giftCardChannelConfigurationFactory;
-
-    public function __construct(
-        RepositoryInterface $giftCardConfigurationRepository,
-        ChannelRepositoryInterface $channelRepository,
-        RepositoryInterface $localeRepository,
-        RepositoryInterface $giftCardChannelConfigurationRepository,
-        FactoryInterface $giftCardChannelConfigurationFactory,
-    ) {
-        $this->giftCardConfigurationRepository = $giftCardConfigurationRepository;
-        $this->channelRepository = $channelRepository;
-        $this->localeRepository = $localeRepository;
-        $this->giftCardChannelConfigurationRepository = $giftCardChannelConfigurationRepository;
-        $this->giftCardChannelConfigurationFactory = $giftCardChannelConfigurationFactory;
+    public function __construct(private readonly RepositoryInterface $giftCardConfigurationRepository, private readonly ChannelRepositoryInterface $channelRepository, private readonly RepositoryInterface $localeRepository, private readonly RepositoryInterface $giftCardChannelConfigurationRepository, private readonly FactoryInterface $giftCardChannelConfigurationFactory)
+    {
     }
 
     public function __invoke(AssociateConfigurationToChannel $command): GiftCardConfigurationInterface

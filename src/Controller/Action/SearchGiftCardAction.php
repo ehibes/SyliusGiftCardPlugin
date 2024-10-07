@@ -12,16 +12,8 @@ use Twig\Environment;
 
 final class SearchGiftCardAction
 {
-    private FormFactoryInterface $formFactory;
-
-    private Environment $twig;
-
-    public function __construct(
-        FormFactoryInterface $formFactory,
-        Environment $twig,
-    ) {
-        $this->formFactory = $formFactory;
-        $this->twig = $twig;
+    public function __construct(private readonly FormFactoryInterface $formFactory, private readonly Environment $twig)
+    {
     }
 
     public function __invoke(Request $request): Response

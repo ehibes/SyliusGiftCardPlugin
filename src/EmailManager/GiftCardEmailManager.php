@@ -9,6 +9,7 @@ use Setono\SyliusGiftCardPlugin\Model\GiftCardInterface;
 use Setono\SyliusGiftCardPlugin\Renderer\PdfRendererInterface;
 use Setono\SyliusGiftCardPlugin\Resolver\CustomerChannelResolverInterface;
 use Setono\SyliusGiftCardPlugin\Resolver\LocaleResolverInterface;
+use Sylius\Component\Channel\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Mailer\Sender\SenderInterface;
@@ -17,32 +18,8 @@ use Webimpress\SafeWriter\FileWriter;
 
 final class GiftCardEmailManager implements GiftCardEmailManagerInterface
 {
-    private SenderInterface $sender;
-
-    private LocaleAwareInterface $translator;
-
-    private CustomerChannelResolverInterface $customerChannelResolver;
-
-    private LocaleResolverInterface $localeResolver;
-
-    private PdfRendererInterface $pdfRenderer;
-
-    private string $cacheDir;
-
-    public function __construct(
-        SenderInterface $sender,
-        LocaleAwareInterface $translator,
-        CustomerChannelResolverInterface $customerChannelResolver,
-        LocaleResolverInterface $customerLocaleResolver,
-        PdfRendererInterface $pdfRenderer,
-        string $cacheDir,
-    ) {
-        $this->sender = $sender;
-        $this->translator = $translator;
-        $this->customerChannelResolver = $customerChannelResolver;
-        $this->localeResolver = $customerLocaleResolver;
-        $this->pdfRenderer = $pdfRenderer;
-        $this->cacheDir = $cacheDir;
+    public function __construct(private readonly SenderInterface $sender, private readonly LocaleAwareInterface $translator, private readonly CustomerChannelResolverInterface $customerChannelResolver, private readonly LocaleResolverInterface $localeResolver, private readonly PdfRendererInterface $pdfRenderer, private readonly string $cacheDir)
+    {
     }
 
     public function sendEmailToCustomerWithGiftCard(CustomerInterface $customer, GiftCardInterface $giftCard): void
@@ -75,7 +52,7 @@ final class GiftCardEmailManager implements GiftCardEmailManagerInterface
     public function sendEmailWithGiftCardsFromOrder(OrderInterface $order, array $giftCards): void
     {
         $customer = $order->getCustomer();
-        if (null === $customer) {
+        if (!$customer instanceof \Sylius\Component\Customer\Model\CustomerInterface) {
             return;
         }
 
@@ -85,7 +62,7 @@ final class GiftCardEmailManager implements GiftCardEmailManagerInterface
         }
 
         $channel = $order->getChannel();
-        if (null === $channel) {
+        if (!$channel instanceof ChannelInterface) {
             return;
         }
 

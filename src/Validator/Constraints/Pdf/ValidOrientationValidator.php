@@ -10,11 +10,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 final class ValidOrientationValidator extends ConstraintValidator
 {
-    private array $availableOrientations;
-
-    public function __construct(array $availableOrientations)
+    public function __construct(private readonly array $availableOrientations)
     {
-        $this->availableOrientations = $availableOrientations;
     }
 
     /**

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusGiftCardPlugin\Fixture\Factory;
 
+use Faker\Factory;
+use Faker\Generator;
 use Setono\SyliusGiftCardPlugin\Generator\GiftCardCodeGeneratorInterface;
 use Setono\SyliusGiftCardPlugin\Model\GiftCardInterface;
 use Setono\SyliusGiftCardPlugin\Repository\GiftCardRepositoryInterface;
@@ -22,34 +24,18 @@ use Webmozart\Assert\Assert;
 
 class GiftCardExampleFactory extends AbstractExampleFactory implements ExampleFactoryInterface
 {
-    protected GiftCardRepositoryInterface $giftCardRepository;
-
-    protected FactoryInterface $giftCardFactory;
-
-    protected GiftCardCodeGeneratorInterface $giftCardCodeGenerator;
-
-    protected ChannelRepositoryInterface $channelRepository;
-
-    protected RepositoryInterface $currencyRepository;
-
-    protected \Faker\Generator $faker;
+    protected Generator $faker;
 
     protected OptionsResolver $optionsResolver;
 
     public function __construct(
-        GiftCardRepositoryInterface $giftCardRepository,
-        FactoryInterface $giftCardFactory,
-        GiftCardCodeGeneratorInterface $giftCardCodeGenerator,
-        ChannelRepositoryInterface $channelRepository,
-        RepositoryInterface $currencyRepository,
+        protected GiftCardRepositoryInterface $giftCardRepository,
+        protected FactoryInterface $giftCardFactory,
+        protected GiftCardCodeGeneratorInterface $giftCardCodeGenerator,
+        protected ChannelRepositoryInterface $channelRepository,
+        protected RepositoryInterface $currencyRepository,
     ) {
-        $this->giftCardRepository = $giftCardRepository;
-        $this->giftCardFactory = $giftCardFactory;
-        $this->giftCardCodeGenerator = $giftCardCodeGenerator;
-        $this->channelRepository = $channelRepository;
-        $this->currencyRepository = $currencyRepository;
-
-        $this->faker = \Faker\Factory::create();
+        $this->faker = Factory::create();
         $this->optionsResolver = new OptionsResolver();
 
         $this->configureOptions($this->optionsResolver);
@@ -90,9 +76,7 @@ class GiftCardExampleFactory extends AbstractExampleFactory implements ExampleFa
     protected function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setDefault('code', function (Options $options): string {
-                return $this->giftCardCodeGenerator->generate();
-            })
+            ->setDefault('code', fn (Options $options): string => $this->giftCardCodeGenerator->generate())
 
             ->setDefault('channel', LazyOption::randomOne($this->channelRepository))
             ->setAllowedTypes('channel', ['null', 'string', ChannelInterface::class])
@@ -144,13 +128,9 @@ class GiftCardExampleFactory extends AbstractExampleFactory implements ExampleFa
                 return $currency;
             })
 
-            ->setDefault('amount', function (Options $options): int {
-                return $this->faker->randomElement([10, 20, 30, 40, 50, 75, 100, 150, 200, 250, 300, 400, 500]);
-            })
+            ->setDefault('amount', fn (Options $options): int => $this->faker->randomElement([10, 20, 30, 40, 50, 75, 100, 150, 200, 250, 300, 400, 500]))
             ->setAllowedTypes('amount', ['float', 'int'])
-            ->setNormalizer('amount', function (Options $options, float $amount): int {
-                return (int) round($amount * 100);
-            })
+            ->setNormalizer('amount', fn (Options $options, float $amount): int => (int) round($amount * 100))
 
             ->setDefault('enabled', true)
             ->setAllowedTypes('enabled', 'bool')

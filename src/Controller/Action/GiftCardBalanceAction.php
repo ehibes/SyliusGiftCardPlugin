@@ -15,16 +15,8 @@ use Twig\Environment;
  */
 final class GiftCardBalanceAction
 {
-    private GiftCardRepositoryInterface $giftCardRepository;
-
-    private Environment $twig;
-
-    public function __construct(
-        GiftCardRepositoryInterface $giftCardRepository,
-        Environment $twig,
-    ) {
-        $this->giftCardRepository = $giftCardRepository;
-        $this->twig = $twig;
+    public function __construct(private readonly GiftCardRepositoryInterface $giftCardRepository, private readonly Environment $twig)
+    {
     }
 
     public function __invoke(Request $request): Response

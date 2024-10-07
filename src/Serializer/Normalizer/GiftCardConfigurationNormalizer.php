@@ -6,7 +6,9 @@ namespace Setono\SyliusGiftCardPlugin\Serializer\Normalizer;
 
 use ArrayObject;
 use Setono\SyliusGiftCardPlugin\Exception\UnexpectedTypeException;
+use Setono\SyliusGiftCardPlugin\Model\GiftCardConfigurationImageInterface;
 use Setono\SyliusGiftCardPlugin\Model\GiftCardConfigurationInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -14,19 +16,13 @@ use Webmozart\Assert\Assert;
 
 final class GiftCardConfigurationNormalizer implements ContextAwareNormalizerInterface
 {
-    private ObjectNormalizer $objectNormalizer;
-
-    private RequestStack $requestStack;
-
-    private string $publicMediaDirectory;
+    private readonly string $publicMediaDirectory;
 
     public function __construct(
-        ObjectNormalizer $objectNormalizer,
-        RequestStack $requestStack,
+        private readonly ObjectNormalizer $objectNormalizer,
+        private readonly RequestStack $requestStack,
         string $publicMediaDirectory,
     ) {
-        $this->objectNormalizer = $objectNormalizer;
-        $this->requestStack = $requestStack;
         $this->publicMediaDirectory = trim($publicMediaDirectory, '/');
     }
 
@@ -50,17 +46,17 @@ final class GiftCardConfigurationNormalizer implements ContextAwareNormalizerInt
         $data['image'] = '';
 
         $request = $this->requestStack->getMainRequest();
-        if (null !== $request) {
+        if ($request instanceof Request) {
             $data['image'] = $request->getSchemeAndHttpHost() . '/bundles/setonosyliusgiftcardplugin/setono-logo.png';
         }
 
         $image = $object->getBackgroundImage();
-        if (null === $image) {
+        if (!$image instanceof GiftCardConfigurationImageInterface) {
             return $data;
         }
 
         $path = $image->getPath();
-        if (null !== $path && null !== $request) {
+        if (null !== $path && $request instanceof Request) {
             $data['image'] = sprintf('%s/%s/%s', $request->getSchemeAndHttpHost(), $this->publicMediaDirectory, $path);
         }
 

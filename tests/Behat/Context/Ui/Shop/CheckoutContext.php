@@ -15,28 +15,8 @@ use Webmozart\Assert\Assert;
 
 final class CheckoutContext implements Context
 {
-    /** @var CheckoutCompleteContext */
-    private $checkoutCompleteContext;
-
-    /** @var OrderContext */
-    private $orderContext;
-
-    /** @var OrderRepositoryInterface */
-    private $orderRepository;
-
-    /** @var EntityManagerInterface */
-    private $giftCardManager;
-
-    public function __construct(
-        CheckoutCompleteContext $checkoutCompleteContext,
-        OrderContext $orderContext,
-        OrderRepositoryInterface $orderRepository,
-        EntityManagerInterface $giftCardManager,
-    ) {
-        $this->checkoutCompleteContext = $checkoutCompleteContext;
-        $this->orderContext = $orderContext;
-        $this->orderRepository = $orderRepository;
-        $this->giftCardManager = $giftCardManager;
+    public function __construct(private readonly CheckoutCompleteContext $checkoutCompleteContext, private readonly OrderContext $orderContext, private readonly OrderRepositoryInterface $orderRepository, private readonly EntityManagerInterface $giftCardManager)
+    {
     }
 
     /**

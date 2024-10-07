@@ -13,16 +13,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class DownloadGiftCardPdfAction
 {
-    private GiftCardConfigurationProviderInterface $configurationProvider;
-
-    private PdfRendererInterface $pdfRenderer;
-
-    public function __construct(
-        GiftCardConfigurationProviderInterface $configurationProvider,
-        PdfRendererInterface $giftCardPDFRenderer,
-    ) {
-        $this->configurationProvider = $configurationProvider;
-        $this->pdfRenderer = $giftCardPDFRenderer;
+    public function __construct(private readonly GiftCardConfigurationProviderInterface $configurationProvider, private readonly PdfRendererInterface $pdfRenderer)
+    {
     }
 
     public function __invoke(GiftCardInterface $data): Response

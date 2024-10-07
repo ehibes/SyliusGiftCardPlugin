@@ -20,28 +20,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class DownloadGiftCardPdfAction
 {
-    private GiftCardRepositoryInterface $giftCardRepository;
-
-    private AuthorizationCheckerInterface $authChecker;
-
-    private GiftCardConfigurationProviderInterface $configurationProvider;
-
-    private PdfRendererInterface $PDFRenderer;
-
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(
-        GiftCardRepositoryInterface $giftCardRepository,
-        AuthorizationCheckerInterface $authChecker,
-        GiftCardConfigurationProviderInterface $configurationProvider,
-        PdfRendererInterface $giftCardPDFRenderer,
-        UrlGeneratorInterface $urlGenerator,
-    ) {
-        $this->giftCardRepository = $giftCardRepository;
-        $this->authChecker = $authChecker;
-        $this->configurationProvider = $configurationProvider;
-        $this->PDFRenderer = $giftCardPDFRenderer;
-        $this->urlGenerator = $urlGenerator;
+    public function __construct(private readonly GiftCardRepositoryInterface $giftCardRepository, private readonly AuthorizationCheckerInterface $authChecker, private readonly GiftCardConfigurationProviderInterface $configurationProvider, private readonly PdfRendererInterface $PDFRenderer, private readonly UrlGeneratorInterface $urlGenerator)
+    {
     }
 
     public function __invoke(Request $request, int $id): Response

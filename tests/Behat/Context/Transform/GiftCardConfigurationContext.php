@@ -10,11 +10,8 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 final class GiftCardConfigurationContext implements Context
 {
-    private RepositoryInterface $giftCardConfigurationRepository;
-
-    public function __construct(RepositoryInterface $giftCardConfigurationRepository)
+    public function __construct(private readonly RepositoryInterface $giftCardConfigurationRepository)
     {
-        $this->giftCardConfigurationRepository = $giftCardConfigurationRepository;
     }
 
     /**

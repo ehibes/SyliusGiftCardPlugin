@@ -23,37 +23,25 @@ final class GiftCardConfigurationProvider implements GiftCardConfigurationProvid
 {
     use ORMManagerTrait;
 
-    private GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository;
-
-    private GiftCardConfigurationFactoryInterface $giftCardConfigurationFactory;
-
-    private LocaleContextInterface $localeContext;
-
-    private RepositoryInterface $localeRepository;
-
     public function __construct(
-        GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository,
-        GiftCardConfigurationFactoryInterface $giftCardConfigurationFactory,
-        LocaleContextInterface $localeContext,
-        RepositoryInterface $localeRepository,
+        private GiftCardConfigurationRepositoryInterface $giftCardConfigurationRepository,
+        private GiftCardConfigurationFactoryInterface $giftCardConfigurationFactory,
+        private LocaleContextInterface $localeContext,
+        private RepositoryInterface $localeRepository,
         ManagerRegistry $managerRegistry,
     ) {
-        $this->giftCardConfigurationRepository = $giftCardConfigurationRepository;
-        $this->giftCardConfigurationFactory = $giftCardConfigurationFactory;
-        $this->localeContext = $localeContext;
-        $this->localeRepository = $localeRepository;
         $this->managerRegistry = $managerRegistry;
     }
 
     public function getConfiguration(BaseChannelInterface $channel, LocaleInterface $locale): GiftCardConfigurationInterface
     {
         $configuration = $this->giftCardConfigurationRepository->findOneByChannelAndLocale($channel, $locale);
-        if (null !== $configuration) {
+        if ($configuration instanceof GiftCardConfigurationInterface) {
             return $configuration;
         }
 
         $configuration = $this->giftCardConfigurationRepository->findDefault();
-        if (null !== $configuration) {
+        if ($configuration instanceof GiftCardConfigurationInterface) {
             return $configuration;
         }
 
@@ -77,16 +65,12 @@ final class GiftCardConfigurationProvider implements GiftCardConfigurationProvid
 
         try {
             $order = $giftCard->getOrder();
-            if ($order instanceof OrderInterface) {
-                $localeCode = $order->getLocaleCode();
-            } else {
-                $localeCode = $this->localeContext->getLocaleCode();
-            }
+            $localeCode = $order instanceof OrderInterface ? $order->getLocaleCode() : $this->localeContext->getLocaleCode();
             $locale = $this->localeRepository->findOneBy(['code' => $localeCode]);
             if (!$locale instanceof LocaleInterface) {
                 throw new LocaleNotFoundException();
             }
-        } catch (LocaleNotFoundException $exception) {
+        } catch (LocaleNotFoundException) {
             $locale = $channel->getDefaultLocale();
         }
 

@@ -17,28 +17,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 final class GiftCardContext implements Context
 {
-    private SharedStorageInterface $sharedStorage;
-
-    private GiftCardRepositoryInterface $giftCardRepository;
-
-    private GiftCardFactoryInterface $giftCardFactory;
-
-    private ObjectManager $productManager;
-
-    private MessageBusInterface $messageBus;
-
-    public function __construct(
-        SharedStorageInterface $sharedStorage,
-        GiftCardRepositoryInterface $giftCardRepository,
-        GiftCardFactoryInterface $giftCardFactory,
-        ObjectManager $productManager,
-        MessageBusInterface $messageBus,
-    ) {
-        $this->sharedStorage = $sharedStorage;
-        $this->giftCardRepository = $giftCardRepository;
-        $this->giftCardFactory = $giftCardFactory;
-        $this->productManager = $productManager;
-        $this->messageBus = $messageBus;
+    public function __construct(private readonly SharedStorageInterface $sharedStorage, private readonly GiftCardRepositoryInterface $giftCardRepository, private readonly GiftCardFactoryInterface $giftCardFactory, private readonly ObjectManager $productManager, private readonly MessageBusInterface $messageBus)
+    {
     }
 
     /**
@@ -73,7 +53,7 @@ final class GiftCardContext implements Context
         int $price,
         ?ChannelInterface $channel = null,
     ): void {
-        if (null === $channel) {
+        if (!$channel instanceof ChannelInterface) {
             /** @var ChannelInterface $channel */
             $channel = $this->sharedStorage->get('channel');
         }

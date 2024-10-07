@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Setono\SyliusGiftCardPlugin\Validator\Constraints;
 
+use Setono\SyliusGiftCardPlugin\Model\GiftCardConfigurationImageInterface;
 use Setono\SyliusGiftCardPlugin\Model\GiftCardConfigurationInterface;
+use SplFileInfo;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -26,11 +28,11 @@ final class HasBackgroundImageValidator extends ConstraintValidator
 
         $backgroundImage = $value->getBackgroundImage();
 
-        if (null === $backgroundImage) {
+        if (!$backgroundImage instanceof GiftCardConfigurationImageInterface) {
             return;
         }
 
-        if (null === $backgroundImage->getFile() && null === $backgroundImage->getPath()) {
+        if (!$backgroundImage->getFile() instanceof SplFileInfo && null === $backgroundImage->getPath()) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }

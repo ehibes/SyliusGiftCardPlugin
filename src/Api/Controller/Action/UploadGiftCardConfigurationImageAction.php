@@ -17,28 +17,11 @@ use Webmozart\Assert\Assert;
 
 final class UploadGiftCardConfigurationImageAction
 {
-    private FactoryInterface $giftCardConfigurationImageFactory;
-
-    private RepositoryInterface $giftCardConfigurationImageRepository;
-
-    private ImageUploaderInterface $imageUploader;
-
-    /** @var LegacyIriConverterInterface|IriConverterInterface */
-    private $iriConverter;
-
     /**
      * @param LegacyIriConverterInterface|IriConverterInterface $iriConverter
      */
-    public function __construct(
-        FactoryInterface $giftCardConfigurationImageFactory,
-        RepositoryInterface $giftCardConfigurationImageRepository,
-        ImageUploaderInterface $imageUploader,
-        $iriConverter,
-    ) {
-        $this->giftCardConfigurationImageFactory = $giftCardConfigurationImageFactory;
-        $this->giftCardConfigurationImageRepository = $giftCardConfigurationImageRepository;
-        $this->imageUploader = $imageUploader;
-        $this->iriConverter = $iriConverter;
+    public function __construct(private readonly FactoryInterface $giftCardConfigurationImageFactory, private readonly RepositoryInterface $giftCardConfigurationImageRepository, private readonly ImageUploaderInterface $imageUploader, private $iriConverter)
+    {
     }
 
     public function __invoke(Request $request): GiftCardConfigurationImageInterface

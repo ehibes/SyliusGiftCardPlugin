@@ -14,11 +14,8 @@ use Webmozart\Assert\Assert;
 
 final class StringFieldType implements FieldTypeInterface
 {
-    private PropertyAccessorInterface $propertyAccessor;
-
-    public function __construct(PropertyAccessorInterface $propertyAccessor)
+    public function __construct(private readonly PropertyAccessorInterface $propertyAccessor)
     {
-        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function render(Field $field, $data, array $options): string
@@ -30,8 +27,8 @@ final class StringFieldType implements FieldTypeInterface
 
             /** @var mixed $value */
             $value = $this->propertyAccessor->getValue($data, $field->getPath());
-            Assert::true(self::isStringable($value));
-        } catch (Throwable $e) {
+            Assert::true($this->isStringable($value));
+        } catch (Throwable) {
             return '';
         }
 
@@ -43,11 +40,9 @@ final class StringFieldType implements FieldTypeInterface
     }
 
     /**
-     * @param mixed $value
-     *
      * @psalm-assert-if-true null|scalar|object $value
      */
-    private static function isStringable($value): bool
+    private function isStringable(mixed $value): bool
     {
         return $value === null || is_scalar($value) || (is_object($value) && method_exists($value, '__toString'));
     }

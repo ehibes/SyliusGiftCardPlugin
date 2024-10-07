@@ -10,24 +10,8 @@ use Sylius\Component\Resource\Factory\FactoryInterface;
 
 final class GiftCardConfigurationFactory implements GiftCardConfigurationFactoryInterface
 {
-    private FactoryInterface $decoratedFactory;
-
-    private DefaultGiftCardTemplateContentProviderInterface $defaultGiftCardTemplateContentProvider;
-
-    private string $defaultOrientation;
-
-    private string $defaultPageSize;
-
-    public function __construct(
-        FactoryInterface $decoratedFactory,
-        DefaultGiftCardTemplateContentProviderInterface $defaultGiftCardTemplateContentProvider,
-        string $defaultOrientation,
-        string $defaultPageSize,
-    ) {
-        $this->decoratedFactory = $decoratedFactory;
-        $this->defaultGiftCardTemplateContentProvider = $defaultGiftCardTemplateContentProvider;
-        $this->defaultOrientation = $defaultOrientation;
-        $this->defaultPageSize = $defaultPageSize;
+    public function __construct(private readonly FactoryInterface $decoratedFactory, private readonly DefaultGiftCardTemplateContentProviderInterface $defaultGiftCardTemplateContentProvider, private readonly string $defaultOrientation, private readonly string $defaultPageSize)
+    {
     }
 
     public function createNew(): GiftCardConfigurationInterface

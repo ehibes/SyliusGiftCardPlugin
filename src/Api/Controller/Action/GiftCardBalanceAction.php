@@ -9,11 +9,8 @@ use Setono\SyliusGiftCardPlugin\Repository\GiftCardRepositoryInterface;
 
 final class GiftCardBalanceAction
 {
-    private GiftCardRepositoryInterface $giftCardRepository;
-
-    public function __construct(GiftCardRepositoryInterface $giftCardRepository)
+    public function __construct(private readonly GiftCardRepositoryInterface $giftCardRepository)
     {
-        $this->giftCardRepository = $giftCardRepository;
     }
 
     public function __invoke(): GiftCardBalanceCollection

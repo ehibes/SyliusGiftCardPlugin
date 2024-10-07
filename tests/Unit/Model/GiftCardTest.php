@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusGiftCardPlugin\Tests\Unit\Model;
 
+use DateTime;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusGiftCardPlugin\Model\GiftCard;
@@ -58,7 +59,7 @@ final class GiftCardTest extends TestCase
         $giftCard->setOrigin('My origin');
         $this->assertSame('My origin', $giftCard->getOrigin());
 
-        $expiresAt = new \DateTime();
+        $expiresAt = new DateTime();
         $giftCard->setExpiresAt($expiresAt);
         $this->assertSame($expiresAt, $giftCard->getExpiresAt());
 
@@ -156,9 +157,9 @@ final class GiftCardTest extends TestCase
      */
     public function it_can_expire(): void
     {
-        $today = new \DateTime('2022-01-01 00:00:00');
+        $today = new DateTime('2022-01-01 00:00:00');
         $giftCard = new GiftCard();
-        $giftCard->setExpiresAt(new \DateTime('2021-12-15 14:00:00'));
+        $giftCard->setExpiresAt(new DateTime('2021-12-15 14:00:00'));
 
         $this->assertTrue($giftCard->isExpired($today));
     }
@@ -178,9 +179,9 @@ final class GiftCardTest extends TestCase
      */
     public function it_is_not_expired_if_expiresAt_is_in_future(): void
     {
-        $today = new \DateTime('2022-01-01 00:00:00');
+        $today = new DateTime('2022-01-01 00:00:00');
         $giftCard = new GiftCard();
-        $giftCard->setExpiresAt(new \DateTime('2022-12-15 14:00:00'));
+        $giftCard->setExpiresAt(new DateTime('2022-12-15 14:00:00'));
 
         $this->assertFalse($giftCard->isExpired($today));
     }

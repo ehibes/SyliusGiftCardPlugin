@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusGiftCardPlugin\Tests\Unit\Factory;
 
+use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusGiftCardPlugin\Factory\GiftCardFactory;
@@ -93,7 +95,7 @@ final class GiftCardFactoryTest extends TestCase
         $channel = new Channel();
         $giftCardConfiguration = new GiftCardConfiguration();
         $giftCardConfiguration->setDefaultValidityPeriod('1 month');
-        $expectedValidUntilDate = new \DateTime('2022-01-01 12:00:00');
+        $expectedValidUntilDate = new DateTime('2022-01-01 12:00:00');
         $expectedValidUntilDate->modify('+1 month');
 
         $decoratedFactory = $this->prophesize(FactoryInterface::class);
@@ -105,7 +107,7 @@ final class GiftCardFactoryTest extends TestCase
         $decoratedFactory->createNew()->willReturn($giftCard);
         $giftCardCodeGenerator->generate()->willReturn('super-code');
         $configurationProvider->getConfigurationForGiftCard($giftCard)->willReturn($giftCardConfiguration);
-        $calendar->today()->willReturn(new \DateTimeImmutable('2022-01-01 12:00:00'));
+        $calendar->today()->willReturn(new DateTimeImmutable('2022-01-01 12:00:00'));
 
         $factory = new GiftCardFactory(
             $decoratedFactory->reveal(),

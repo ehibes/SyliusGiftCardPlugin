@@ -11,6 +11,7 @@ use Setono\SyliusGiftCardPlugin\Provider\GiftCardConfigurationProviderInterface;
 use Setono\SyliusGiftCardPlugin\Provider\PdfRenderingOptionsProviderInterface;
 use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Channel\Model\ChannelInterface;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Locale\Context\LocaleContextInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Twig\Environment;
@@ -18,36 +19,8 @@ use Webmozart\Assert\Assert;
 
 final class PdfRenderer implements PdfRendererInterface
 {
-    private Environment $twig;
-
-    private GiftCardConfigurationProviderInterface $configurationProvider;
-
-    private ChannelContextInterface $channelContext;
-
-    private LocaleContextInterface $localeContext;
-
-    private GeneratorInterface $snappy;
-
-    private PdfRenderingOptionsProviderInterface $renderingOptionsProvider;
-
-    private NormalizerInterface $normalizer;
-
-    public function __construct(
-        Environment $twig,
-        GiftCardConfigurationProviderInterface $configurationProvider,
-        ChannelContextInterface $channelContext,
-        LocaleContextInterface $localeContext,
-        GeneratorInterface $snappy,
-        PdfRenderingOptionsProviderInterface $renderingOptionsProvider,
-        NormalizerInterface $normalizer,
-    ) {
-        $this->twig = $twig;
-        $this->configurationProvider = $configurationProvider;
-        $this->channelContext = $channelContext;
-        $this->localeContext = $localeContext;
-        $this->snappy = $snappy;
-        $this->renderingOptionsProvider = $renderingOptionsProvider;
-        $this->normalizer = $normalizer;
+    public function __construct(private readonly Environment $twig, private readonly GiftCardConfigurationProviderInterface $configurationProvider, private readonly ChannelContextInterface $channelContext, private readonly LocaleContextInterface $localeContext, private readonly GeneratorInterface $snappy, private readonly PdfRenderingOptionsProviderInterface $renderingOptionsProvider, private readonly NormalizerInterface $normalizer)
+    {
     }
 
     public function render(
@@ -56,20 +29,20 @@ final class PdfRenderer implements PdfRendererInterface
         ChannelInterface $channel = null,
         string $localeCode = null,
     ): PdfResponse {
-        if (null === $channel) {
+        if (!$channel instanceof ChannelInterface) {
             $order = $giftCard->getOrder();
-            if (null !== $order) {
+            if ($order instanceof OrderInterface) {
                 $channel = $order->getChannel();
             }
 
-            if (null === $channel) {
+            if (!$channel instanceof ChannelInterface) {
                 $channel = $this->channelContext->getChannel();
             }
         }
 
         if (null === $localeCode) {
             $order = $giftCard->getOrder();
-            if (null !== $order) {
+            if ($order instanceof OrderInterface) {
                 $localeCode = $order->getLocaleCode();
             }
 
@@ -78,7 +51,7 @@ final class PdfRenderer implements PdfRendererInterface
             }
         }
 
-        if (null === $giftCardConfiguration) {
+        if (!$giftCardConfiguration instanceof GiftCardConfigurationInterface) {
             $giftCardConfiguration = $this->configurationProvider->getConfigurationForGiftCard($giftCard);
         }
 

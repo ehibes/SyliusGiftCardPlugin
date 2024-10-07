@@ -17,11 +17,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 final class GiftCardsByLoggedInUserExtension implements ContextAwareQueryCollectionExtensionInterface
 {
-    private UserContextInterface $userContext;
-
-    public function __construct(UserContextInterface $userContext)
+    public function __construct(private readonly UserContextInterface $userContext)
     {
-        $this->userContext = $userContext;
     }
 
     public function applyToCollection(

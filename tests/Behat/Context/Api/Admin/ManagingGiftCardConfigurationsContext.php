@@ -16,24 +16,8 @@ use Webmozart\Assert\Assert;
 
 final class ManagingGiftCardConfigurationsContext implements Context
 {
-    private ApiClientInterface $client;
-
-    private ResponseCheckerInterface $responseChecker;
-
-    private IriConverterInterface $iriConverter;
-
-    private RequestFactoryInterface $requestFactory;
-
-    public function __construct(
-        ApiClientInterface $client,
-        ResponseCheckerInterface $responseChecker,
-        IriConverterInterface $iriConverter,
-        RequestFactoryInterface $requestFactory,
-    ) {
-        $this->client = $client;
-        $this->responseChecker = $responseChecker;
-        $this->iriConverter = $iriConverter;
-        $this->requestFactory = $requestFactory;
+    public function __construct(private readonly ApiClientInterface $client, private readonly ResponseCheckerInterface $responseChecker, private readonly IriConverterInterface $iriConverter, private readonly RequestFactoryInterface $requestFactory)
+    {
     }
 
     /**

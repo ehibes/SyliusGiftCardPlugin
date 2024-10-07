@@ -69,9 +69,7 @@ class GiftCardConfiguration implements GiftCardConfigurationInterface
 
     public function getImagesByType(string $type): Collection
     {
-        return $this->images->filter(function (ImageInterface $image) use ($type): bool {
-            return $image->getType() === $type;
-        });
+        return $this->images->filter(fn (ImageInterface $image): bool => $image->getType() === $type);
     }
 
     public function hasImages(): bool
@@ -116,11 +114,11 @@ class GiftCardConfiguration implements GiftCardConfigurationInterface
     public function setBackgroundImage(?GiftCardConfigurationImageInterface $image): void
     {
         $actualImage = $this->getBackgroundImage();
-        if (null !== $actualImage) {
+        if ($actualImage instanceof GiftCardConfigurationImageInterface) {
             $this->removeImage($actualImage);
         }
 
-        if (null === $image) {
+        if (!$image instanceof GiftCardConfigurationImageInterface) {
             return;
         }
 
