@@ -77,7 +77,7 @@ class GiftCard implements GiftCardInterface
 
     public function isDeletable(): bool
     {
-        return !$this->orderItemUnit instanceof OrderItemUnitInterface;
+        return null === $this->orderItemUnit;
     }
 
     public function getOrderItemUnit(): ?OrderItemUnitInterface
@@ -99,7 +99,8 @@ class GiftCard implements GiftCardInterface
     public function getOrder(): ?OrderInterface
     {
         $orderItemUnit = $this->getOrderItemUnit();
-        if (!$orderItemUnit instanceof OrderItemUnitInterface) {
+
+        if (null === $orderItemUnit) {
             return null;
         }
 
@@ -216,7 +217,7 @@ class GiftCard implements GiftCardInterface
     public function getCustomerIdentification(): ?array
     {
         $customer = $this->getCustomer();
-        if (!$customer instanceof CustomerInterface) {
+        if (null === $customer) {
             return null;
         }
 
@@ -229,7 +230,7 @@ class GiftCard implements GiftCardInterface
     public function getOrderIdentification(): ?array
     {
         $order = $this->getOrder();
-        if (!$order instanceof OrderInterface) {
+        if (null === $order) {
             return null;
         }
 
@@ -249,12 +250,7 @@ class GiftCard implements GiftCardInterface
 
     public function getChannelCode(): ?string
     {
-        $channel = $this->getChannel();
-        if (!$channel instanceof ChannelInterface) {
-            return null;
-        }
-
-        return $channel->getCode();
+        return $this->getChannel()?->getCode();
     }
 
     public function hasOrderOrCustomer(): bool
@@ -294,12 +290,12 @@ class GiftCard implements GiftCardInterface
 
     public function isExpired(DateTimeInterface $date = null): bool
     {
-        if (!$date instanceof DateTimeInterface) {
+        if (null === $date) {
             $date = new DateTime();
         }
 
         $giftCardValidUntil = $this->getExpiresAt();
-        if (!$giftCardValidUntil instanceof DateTimeInterface) {
+        if (null === $giftCardValidUntil) {
             return false;
         }
 

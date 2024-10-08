@@ -10,7 +10,6 @@ use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
-use Sylius\Component\Locale\Model\LocaleInterface;
 
 final class LocaleResolver implements LocaleResolverInterface
 {
@@ -21,7 +20,7 @@ final class LocaleResolver implements LocaleResolverInterface
     public function resolveFromCustomer(CustomerInterface $customer): string
     {
         $latestOrder = $this->orderRepository->findLatestByCustomer($customer);
-        if ($latestOrder instanceof \Setono\SyliusGiftCardPlugin\Model\OrderInterface) {
+        if (null !== $latestOrder) {
             return $this->resolveFromOrder($latestOrder);
         }
 
@@ -36,7 +35,7 @@ final class LocaleResolver implements LocaleResolverInterface
         }
 
         $channel = $order->getChannel();
-        if ($channel instanceof \Sylius\Component\Channel\Model\ChannelInterface) {
+        if (null !== $channel) {
             return $this->resolveFromChannel($channel);
         }
 
@@ -71,7 +70,7 @@ final class LocaleResolver implements LocaleResolverInterface
     private function _resolveFromChannel(ChannelInterface $channel): ?string
     {
         $locale = $channel->getDefaultLocale();
-        if ($locale instanceof LocaleInterface) {
+        if (null !== $locale) {
             $localeCode = $locale->getCode();
             if (null !== $localeCode) {
                 return $localeCode;

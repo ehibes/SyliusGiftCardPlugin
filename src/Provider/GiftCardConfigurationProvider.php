@@ -36,12 +36,12 @@ final class GiftCardConfigurationProvider implements GiftCardConfigurationProvid
     public function getConfiguration(BaseChannelInterface $channel, LocaleInterface $locale): GiftCardConfigurationInterface
     {
         $configuration = $this->giftCardConfigurationRepository->findOneByChannelAndLocale($channel, $locale);
-        if ($configuration instanceof GiftCardConfigurationInterface) {
+        if (null !== $configuration) {
             return $configuration;
         }
 
         $configuration = $this->giftCardConfigurationRepository->findDefault();
-        if ($configuration instanceof GiftCardConfigurationInterface) {
+        if (null !== $configuration) {
             return $configuration;
         }
 
@@ -65,7 +65,12 @@ final class GiftCardConfigurationProvider implements GiftCardConfigurationProvid
 
         try {
             $order = $giftCard->getOrder();
-            $localeCode = $order instanceof OrderInterface ? $order->getLocaleCode() : $this->localeContext->getLocaleCode();
+
+            $localeCode = $this->localeContext->getLocaleCode();
+            if ($order instanceof OrderInterface) {
+                $localeCode = $order->getLocaleCode();
+            }
+
             $locale = $this->localeRepository->findOneBy(['code' => $localeCode]);
             if (!$locale instanceof LocaleInterface) {
                 throw new LocaleNotFoundException();

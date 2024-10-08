@@ -9,7 +9,6 @@ use Setono\SyliusGiftCardPlugin\Model\GiftCardInterface;
 use Setono\SyliusGiftCardPlugin\Renderer\PdfRendererInterface;
 use Setono\SyliusGiftCardPlugin\Resolver\CustomerChannelResolverInterface;
 use Setono\SyliusGiftCardPlugin\Resolver\LocaleResolverInterface;
-use Sylius\Component\Channel\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Mailer\Sender\SenderInterface;
@@ -52,7 +51,7 @@ final class GiftCardEmailManager implements GiftCardEmailManagerInterface
     public function sendEmailWithGiftCardsFromOrder(OrderInterface $order, array $giftCards): void
     {
         $customer = $order->getCustomer();
-        if (!$customer instanceof \Sylius\Component\Customer\Model\CustomerInterface) {
+        if (null === $customer) {
             return;
         }
 
@@ -62,7 +61,7 @@ final class GiftCardEmailManager implements GiftCardEmailManagerInterface
         }
 
         $channel = $order->getChannel();
-        if (!$channel instanceof ChannelInterface) {
+        if (null === $channel) {
             return;
         }
 

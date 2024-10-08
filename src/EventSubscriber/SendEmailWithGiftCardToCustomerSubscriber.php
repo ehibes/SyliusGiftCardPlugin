@@ -7,7 +7,6 @@ namespace Setono\SyliusGiftCardPlugin\EventSubscriber;
 use Setono\SyliusGiftCardPlugin\EmailManager\GiftCardEmailManagerInterface;
 use Setono\SyliusGiftCardPlugin\Model\GiftCardInterface;
 use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
-use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -31,12 +30,13 @@ final class SendEmailWithGiftCardToCustomerSubscriber implements EventSubscriber
     public function postCreate(ResourceControllerEvent $event): void
     {
         $giftCard = $event->getSubject();
+
         if (!$giftCard instanceof GiftCardInterface) {
             throw new UnexpectedTypeException($giftCard, GiftCardInterface::class);
         }
 
         $customer = $giftCard->getCustomer();
-        if (!$customer instanceof CustomerInterface) {
+        if (null === $customer) {
             return;
         }
 

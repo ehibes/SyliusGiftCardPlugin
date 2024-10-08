@@ -7,7 +7,6 @@ namespace Setono\SyliusGiftCardPlugin\Security;
 use LogicException;
 use Setono\SyliusGiftCardPlugin\Model\GiftCardInterface;
 use Sylius\Component\Core\Model\AdminUserInterface;
-use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\ShopUserInterface;
 use Sylius\Component\User\Model\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -52,7 +51,7 @@ final class GiftCardVoter extends Voter
     private function canRead(GiftCardInterface $giftCard, ShopUserInterface $user): bool
     {
         // Anonymous gift cards can be seen by everyone
-        if (!$giftCard->getCustomer() instanceof CustomerInterface) {
+        if (null === $giftCard->getCustomer()) {
             return true;
         }
 

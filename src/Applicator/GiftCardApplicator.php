@@ -10,7 +10,6 @@ use Setono\SyliusGiftCardPlugin\Exception\GiftCardNotFoundException;
 use Setono\SyliusGiftCardPlugin\Model\GiftCardInterface;
 use Setono\SyliusGiftCardPlugin\Model\OrderInterface;
 use Setono\SyliusGiftCardPlugin\Repository\GiftCardRepositoryInterface;
-use Sylius\Component\Channel\Model\ChannelInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 
 final class GiftCardApplicator implements GiftCardApplicatorInterface
@@ -37,7 +36,7 @@ final class GiftCardApplicator implements GiftCardApplicatorInterface
         }
 
         $orderChannel = $order->getChannel();
-        if (!$orderChannel instanceof ChannelInterface) {
+        if (null === $orderChannel) {
             throw new RuntimeException('The channel on the order cannot be null');
         }
 
@@ -73,7 +72,7 @@ final class GiftCardApplicator implements GiftCardApplicatorInterface
     {
         $giftCard = $this->giftCardRepository->findOneByCode($giftCardCode);
 
-        if (!$giftCard instanceof GiftCardInterface) {
+        if (null === $giftCard) {
             throw new GiftCardNotFoundException($giftCardCode);
         }
 

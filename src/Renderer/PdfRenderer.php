@@ -11,7 +11,6 @@ use Setono\SyliusGiftCardPlugin\Provider\GiftCardConfigurationProviderInterface;
 use Setono\SyliusGiftCardPlugin\Provider\PdfRenderingOptionsProviderInterface;
 use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Channel\Model\ChannelInterface;
-use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Locale\Context\LocaleContextInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Twig\Environment;
@@ -29,20 +28,20 @@ final class PdfRenderer implements PdfRendererInterface
         ChannelInterface $channel = null,
         string $localeCode = null,
     ): PdfResponse {
-        if (!$channel instanceof ChannelInterface) {
+        if (null === $channel) {
             $order = $giftCard->getOrder();
-            if ($order instanceof OrderInterface) {
+            if (null !== $order) {
                 $channel = $order->getChannel();
             }
 
-            if (!$channel instanceof ChannelInterface) {
+            if (null === $channel) {
                 $channel = $this->channelContext->getChannel();
             }
         }
 
         if (null === $localeCode) {
             $order = $giftCard->getOrder();
-            if ($order instanceof OrderInterface) {
+            if (null !== $order) {
                 $localeCode = $order->getLocaleCode();
             }
 
@@ -51,7 +50,7 @@ final class PdfRenderer implements PdfRendererInterface
             }
         }
 
-        if (!$giftCardConfiguration instanceof GiftCardConfigurationInterface) {
+        if (null === $giftCardConfiguration) {
             $giftCardConfiguration = $this->configurationProvider->getConfigurationForGiftCard($giftCard);
         }
 

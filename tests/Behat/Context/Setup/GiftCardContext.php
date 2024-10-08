@@ -53,7 +53,7 @@ final class GiftCardContext implements Context
         int $price,
         ?ChannelInterface $channel = null,
     ): void {
-        if (!$channel instanceof ChannelInterface) {
+        if (null === $channel) {
             /** @var ChannelInterface $channel */
             $channel = $this->sharedStorage->get('channel');
         }
@@ -95,6 +95,7 @@ final class GiftCardContext implements Context
      */
     public function iApplyGiftCardToOrder(string $code): void
     {
+        /** @var string $cartToken */
         $cartToken = $this->sharedStorage->get('cart_token');
         $message = new AddGiftCardToOrder($cartToken);
         $message->setGiftCardCode($code);
