@@ -43,10 +43,13 @@ final class AddItemToCartHandler
         $cartItem = $this->cartItemFactory->createNew();
         $cartItem->setVariant($productVariant);
 
-        if ($addItemToCart instanceof SetonoSyliusGiftCardAddItemToCart) {
+        if ($this->isGiftCard($addItemToCart, $productVariant)) {
             /** @var ProductInterface $product */
             $product = $productVariant->getProduct();
             if ($product->isGiftCardAmountConfigurable()) {
+                /** @var SetonoSyliusGiftCardAddItemToCart $addItemToCart */
+                $addItemToCart = $addItemToCart;
+                /** @var int|null $giftCardAmount */
                 $giftCardAmount = $addItemToCart->getAmount();
                 Assert::notNull($giftCardAmount);
                 $cartItem->setUnitPrice($giftCardAmount);
@@ -57,10 +60,12 @@ final class AddItemToCartHandler
         $this->orderItemQuantityModifier->modify($cartItem, $addItemToCart->quantity);
         $this->orderModifier->addToOrder($cart, $cartItem);
 
-        if ($addItemToCart instanceof SetonoSyliusGiftCardAddItemToCart) {
+        if ($this->isGiftCard($addItemToCart, $productVariant)) {
             /** @var OrderItemUnitInterface $unit */
             foreach ($cartItem->getUnits() as $unit) {
                 $giftCard = $this->giftCardFactory->createFromOrderItemUnitAndCart($unit, $cart);
+                /** @var SetonoSyliusGiftCardAddItemToCart $addItemToCart */
+                $addItemToCart = $addItemToCart;
                 $giftCard->setCustomMessage($addItemToCart->getCustomMessage());
 
                 // As the common flow for any add to cart action will flush later. Do not flush here.
@@ -69,5 +74,14 @@ final class AddItemToCartHandler
         }
 
         return $cart;
+    }
+
+    private function isGiftCard(SyliusAddItemToCart $addItemToCart, ProductVariantInterface $productVariant): bool
+    {
+        $product = $productVariant->getProduct();
+
+        return $addItemToCart instanceof SetonoSyliusGiftCardAddItemToCart &&
+            $product instanceof ProductInterface &&
+            $product->isGiftCard();
     }
 }
