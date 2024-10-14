@@ -146,7 +146,6 @@ final class AddItemToCartHandlerTest extends TestCase
             ->createNew()
             ->willReturn($cartItem);
 
-
         $orderItemQuantityModifier->modify($cartItem, 1)->shouldBeCalled();
         $orderModifier->addToOrder($cart, $cartItem)->shouldBeCalled();
 
