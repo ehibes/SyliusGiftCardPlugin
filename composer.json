@@ -58,7 +58,7 @@
     },
     "require-dev": {
         "babdev/pagerfanta-bundle": "^3.8",
-        "behat/behat": "^3.14",
+        "behat/behat": "~3.16.0",
         "dmore/behat-chrome-extension": "^1.4",
         "dmore/chrome-mink-driver": "^2.9",
         "doctrine/doctrine-bundle": "^2.7",
