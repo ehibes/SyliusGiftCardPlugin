@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 final class CartContext implements Context
 {
-    public function __construct(private readonly ApiClientInterface $cartsClient, private readonly ResponseCheckerInterface $responseChecker, private readonly SharedStorageInterface $sharedStorage, private readonly ProductVariantResolverInterface $productVariantResolver, private readonly IriConverterInterface $iriConverter, private readonly RequestFactoryInterface $requestFactory, private readonly string $apiUrlPrefix)
+    public function __construct(private readonly ApiClientInterface $shopClient, private readonly ResponseCheckerInterface $responseChecker, private readonly SharedStorageInterface $sharedStorage, private readonly ProductVariantResolverInterface $productVariantResolver, private readonly IriConverterInterface $iriConverter, private readonly RequestFactoryInterface $requestFactory, private readonly string $apiUrlPrefix)
     {
     }
 
@@ -36,7 +36,7 @@ final class CartContext implements Context
             'customMessage' => $message,
         ]);
 
-        $this->cartsClient->executeCustomRequest($request);
+        $this->shopClient->executeCustomRequest($request);
     }
 
     private function pickupCart(?string $localeCode = null): string
@@ -47,9 +47,9 @@ final class CartContext implements Context
             ['HTTP_ACCEPT_LANGUAGE' => $localeCode ?? ''],
         );
 
-        $this->cartsClient->executeCustomRequest($request);
+        $this->shopClient->executeCustomRequest($request);
 
-        $tokenValue = $this->responseChecker->getValue($this->cartsClient->getLastResponse(), 'tokenValue');
+        $tokenValue = $this->responseChecker->getValue($this->shopClient->getLastResponse(), 'tokenValue');
 
         $this->sharedStorage->set('cart_token', $tokenValue);
 
